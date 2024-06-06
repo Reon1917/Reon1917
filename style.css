@@ -2,7 +2,7 @@ body{
     background-color: black;
 }
 h1{
-    background-color: white;
+    background-color: red !important;
 }
 p{
     background-color: yellow;
