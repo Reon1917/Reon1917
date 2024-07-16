@@ -3,105 +3,116 @@
 <head>
     <title>Car Accessories</title>
     <link rel="stylesheet" href="global.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 </head>
 <body>
     <h1>Car Accessories</h1>
  
     <h3>Add Accessory</h3>
-    <select id="accessory-select">
-        <option value="10">Car Cover</option>
-        <option value="20">Seat Covers</option>
-        <option value="30">Phone Holder</option>
-        <!-- Add more options here -->
-    </select>
-    <input type="number" id="amount-input" min="1" value="1">
-    <button class="add-button" onclick="addItemJquery()">Add</button>
- 
+    <button class="add-button" onclick="openAddItemModal()">Add</button>
  
     <h2>Product List</h2>
-    <table id="product-list">
-        <tr>
-            <th>Accessory</th>
-            <th>Amount</th>
-            <th>Price</th>
-        </tr>
+    <table id="product-list" class="table table-striped table-bordered table-condensed">
+        <thead>
+            <tr>
+                <th>Accessory</th>
+                <th>Amount</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
     </table>
     
     <h2>Total Price: <span id="total-price">$0</span></h2>
     <h2>VAT (7%): <span id="vatAmount">$0</span></h2>
     <h2>Total Price Including VAT: <span id="total-price-vat">$0</span></h2>
-    
- 
-    
+
+    <!-- Add Item Modal -->
+    <div id="addItemModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Accessory</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addItemForm">
+                        <div class="form-group">
+                            <label for="item-name">Name</label>
+                            <input type="text" class="form-control" id="item-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="item-price">Price</label>
+                            <input type="number" class="form-control" id="item-price" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="item-amount">Amount</label>
+                            <input type="number" class="form-control" id="item-amount" min="1" required>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="submitAddItemForm()">Add</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        
-        /*function addItem() {
-            var accessorySelect = document.getElementById("accessory-select");
-            var selectedAccessory = accessorySelect.options[accessorySelect.selectedIndex].text;
-            var selectedAccessoryValue = accessorySelect.options[accessorySelect.selectedIndex].value;
-            var amountInput = document.getElementById("amount-input");
-            var amount = amountInput.value;
-            var price = parseFloat(selectedAccessoryValue);
-            var totalPriceElement = document.getElementById("total-price");
-            var currentTotal = parseFloat(totalPriceElement.innerHTML.substring(1)); // Extract current total price and convert to number
-            var newTotal = currentTotal + (price * amount); // Calculate new total price excluding VAT
-    
-            // Update the product list with the new item
-            var productTable = document.getElementById("product-list");
-            var row = productTable.insertRow(-1);
-            var accessoryCell = row.insertCell(0);
-            var amountCell = row.insertCell(1);
-            var priceCell = row.insertCell(2);
-            accessoryCell.innerHTML = selectedAccessory;
-            amountCell.innerHTML = amount;
-            priceCell.innerHTML = "$" + (price * amount).toFixed(2);
-    
-            // Update total price excluding VAT
-            totalPriceElement.innerHTML = "$" + newTotal.toFixed(2);
-    
-            // Calculate and display VAT
-            var vatAmount = newTotal * vatRate;*/
-            
-            
-            var vatRate = 0.07;
-            
-            function addItemJquery() {
-                
-                var accessorySelect = $("#accessory-select");
-                var selectedAccessory = accessorySelect.find("option:selected").text();
-                var selectedAccessoryValue = accessorySelect.val();
-                var amountInput = $("#amount-input");
-                var amount = amountInput.val();
-                var price = parseFloat(selectedAccessoryValue);
-                var totalPriceElement = $("#total-price");
-                var currentTotal = parseFloat(totalPriceElement.text().substring(1)); 
-                var newTotal = currentTotal + (price * amount); // Calculate new total price excluding VAT
+        var productList = [];
 
-                // Update the product list with the new item
-                var productTable = $("#product-list");
-                var row = $("<tr></tr>");
-                var accessoryCell = $("<td></td>").text(selectedAccessory);
-                var amountCell = $("<td></td>").text(amount);
-                var priceCell = $("<td></td>").text("$" + (price * amount).toFixed(2));
-                row.append(accessoryCell, amountCell, priceCell);
-                productTable.append(row);
+        function openAddItemModal() {
+            $('#addItemModal').modal('show');
+        }
 
-                // Update total price excluding VAT
-                totalPriceElement.text("$" + newTotal.toFixed(2));
+        function submitAddItemForm() {
+            var name = document.getElementById("item-name").value;
+            var price = parseFloat(document.getElementById("item-price").value);
+            var amount = parseInt(document.getElementById("item-amount").value);
 
-                // Calculate and display VAT
-                var vatAmount = newTotal * vatRate;
-                $("#vatAmount").text("$" + vatAmount.toFixed(2));
-                
-                // Calculate and display total price including VAT
-                var totalPriceVatElement = $("#total-price-vat");
-                var totalPriceVat = newTotal + vatAmount;
-                totalPriceVatElement.text("$" + totalPriceVat.toFixed(2));
-            }
-    
-          
-        
+            productList.push({
+                accessory: name,
+                price: price,
+                amount: amount
+            });
+
+            $('#addItemModal').modal('hide');
+            renderTable();
+        }
+
+        function renderTable() {
+            var tableBody = document.querySelector("#product-list tbody");
+            tableBody.innerHTML = "";
+            var totalPrice = 0;
+            productList.forEach((item, index) => {
+                var row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.accessory}</td>
+                    <td>${item.amount}</td>
+                    <td>${(item.price * item.amount).toFixed(2)}</td>
+                    <td><button onclick="deleteItem(${index})">Delete</button></td>
+                `;
+                tableBody.appendChild(row);
+                totalPrice += item.price * item.amount;
+            });
+            var vat = (totalPrice * 0.07).toFixed(2);
+            var totalPriceWithVAT = (totalPrice * 1.07).toFixed(2);
+            document.getElementById("total-price").innerText = `$${totalPrice.toFixed(2)}`;
+            document.getElementById("vatAmount").innerText = `$${vat}`;
+            document.getElementById("total-price-vat").innerText = `$${totalPriceWithVAT}`;
+        }
+
+        function deleteItem(index) {
+            productList.splice(index, 1);
+            renderTable();
+        }
     </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+        integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+        crossorigin="anonymous"></script>
 </body>
-</html></select>
+</html>
