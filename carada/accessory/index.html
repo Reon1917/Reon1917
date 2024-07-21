@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>Car Accessories</h1>
+    <h1>Arrakis Accessory Shop</h1>
  
     <h3>Add Accessory</h3>
     <button class="add-button" onclick="openAddItemModal()">Add</button>
@@ -30,68 +30,66 @@
     <h2>Total Price: <span id="total-price">$0</span></h2>
     <h2>VAT (7%): <span id="vatAmount">$0</span></h2>
     <h2>Total Price Including VAT: <span id="total-price-vat">$0</span></h2>
-
     <!-- Add Item Modal -->
     <div id="addItemModal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Accessory</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="addItemForm">
-                        <div class="form-group">
-                            <label for="item-name">Name</label>
-                            <input type="text" class="form-control" id="item-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="item-price">Price</label>
-                            <input type="number" class="form-control" id="item-price" step="0.01" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="item-amount">Amount</label>
-                            <input type="number" class="form-control" id="item-amount" min="1" required>
-                        </div>
-                        <button type="button" class="btn btn-primary" onclick="submitAddItemForm()">Add</button>
-                    </form>
-                </div>
+                <h5 class="modal-title">Add Accessory</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addItemForm">
+                    <div class="form-group">
+                        <label for="item-name">Product</label>
+                        <select class="form-control" id="item-name" required>
+                            <option value="Spice">Spice</option>
+                            <option value="Water of Life">Still Suit - Fremen Edition</option>
+                            <option value="Sand Thumper">Sand Thumper</option>
+                            <option value="Rocket Launcher">Rocket Launcher</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-price">Price</label>
+                        <input type="number" class="form-control" id="item-price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="item-amount">Amount</label>
+                        <input type="number" class="form-control" id="item-amount" min="1" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="submitAddItemForm()">Add</button>
+                </form>
             </div>
         </div>
     </div>
-
-    <script>
-        var productList = [];
-
-        function openAddItemModal() {
-            $('#addItemModal').modal('show');
-        }
-
-        function submitAddItemForm() {
-            var name = document.getElementById("item-name").value;
-            var price = parseFloat(document.getElementById("item-price").value);
-            var amount = parseInt(document.getElementById("item-amount").value);
-
-            productList.push({
-                accessory: name,
-                price: price,
-                amount: amount
-            });
-
-            $('#addItemModal').modal('hide');
-            renderTable();
-        }
-
-        function renderTable() {
-            var tableBody = document.querySelector("#product-list tbody");
-            tableBody.innerHTML = "";
-            var totalPrice = 0;
-            productList.forEach((item, index) => {
-                var row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${item.accessory}</td>
+</div>
+<script>
+    var productList = [];
+    function openAddItemModal() {
+        $('#addItemModal').modal('show');
+    }
+    function submitAddItemForm() {
+        var name = document.getElementById("item-name").value;
+        var price = parseFloat(document.getElementById("item-price").value);
+        var amount = parseInt(document.getElementById("item-amount").value);
+        productList.push({
+            accessory: name,
+            price: price,
+            amount: amount
+        });
+        $('#addItemModal').modal('hide');
+        renderTable();
+    }
+    function renderTable() {
+        var tableBody = document.querySelector("#product-list tbody");
+        tableBody.innerHTML = "";
+        var totalPrice = 0;
+        productList.forEach((item, index) => {
+            var row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${item.accessory}</td>
                     <td>${item.amount}</td>
                     <td>${(item.price * item.amount).toFixed(2)}</td>
                     <td><button onclick="deleteItem(${index})">Delete</button></td>
@@ -105,7 +103,6 @@
             document.getElementById("vatAmount").innerText = `$${vat}`;
             document.getElementById("total-price-vat").innerText = `$${totalPriceWithVAT}`;
         }
-
         function deleteItem(index) {
             productList.splice(index, 1);
             renderTable();
